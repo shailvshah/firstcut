@@ -10,6 +10,7 @@ from unittest.mock import MagicMock, patch
 import pytest
 
 from firstcut import cli
+from firstcut._core import PromptCancelledError
 from firstcut.config import PROJECT_TYPES, SKILLS, STACKS, ForgeConfig
 from firstcut.generate import generate_project
 
@@ -155,6 +156,18 @@ def test_cli_interactive_generation(mock_input: MagicMock, tmp_path: Path) -> No
     dest = tmp_path / "interactive-app"
     assert (dest / "src" / "cli.py").exists()
     assert not (dest / "docs").exists()
+
+
+def test_cli_interactive_cancel_returns_ok(capsys: pytest.CaptureFixture[str]) -> None:
+    with (
+        patch("firstcut.cli._build_cfg", return_value=ForgeConfig()),
+        patch("firstcut.cli._run_interactive", side_effect=PromptCancelledError),
+    ):
+        args = cli._build_parser().parse_args(["init"])
+        exit_code = cli.run_init(args)
+
+    assert exit_code == cli.EXIT_OK
+    assert "Aborted." in capsys.readouterr().out
 
 
 def test_cli_existing_destination_requires_overwrite(tmp_path: Path) -> None:

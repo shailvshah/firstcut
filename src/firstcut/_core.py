@@ -104,6 +104,7 @@ SKILLS = [
 ]
 
 CI_OPTIONS = ["github-actions", "gitlab-ci", "both", "none"]
+CANCEL_WORDS = {"cancel", "exit", "quit", "q"}
 
 LICENSES = {
     "MIT": "MIT License",
@@ -115,11 +116,22 @@ LICENSES = {
 # ── prompt helpers ────────────────────────────────────────────────────────────
 
 
+class PromptCancelledError(Exception):
+    """Raised when a user cancels an interactive prompt."""
+
+
+def _raise_if_cancelled(raw: str) -> None:
+    if raw.strip().lower() in CANCEL_WORDS:
+        raise PromptCancelledError("Aborted.")
+
+
 def prompt(question: str, default: str, choices: list[str] | None = None) -> str:
-    choices_str = f" [{'/'.join(choices)}]" if choices else ""
+    choices_display = [*choices, "cancel"] if choices else ["cancel"]
+    choices_str = f" [{'/'.join(choices_display)}]"
     default_str = f" {dim(f'(default: {default})')}"
     while True:
         raw = input(f"\n{question}{choices_str}{default_str}: ").strip()
+        _raise_if_cancelled(raw)
         val = raw or default
         if choices and val not in choices:
             print(warn(f"Please choose one of: {', '.join(choices)}"))
@@ -135,8 +147,10 @@ def prompt_multi(
         print(f"  {dim(str(i) + '.')} {h(key)} — {desc}")
     default_label = "all" if default_all else "none"
     raw = input(
-        f"\n  Enter numbers to toggle off (comma-separated), or press Enter to keep {default_label}: "
+        "\n  Enter numbers to toggle off (comma-separated), "
+        f"press Enter to keep {default_label}, or type cancel: "
     ).strip()
+    _raise_if_cancelled(raw)
     if not raw:
         return [k for k, _ in options] if default_all else []
     excluded = {int(x.strip()) - 1 for x in raw.split(",") if x.strip().isdigit()}
@@ -145,7 +159,8 @@ def prompt_multi(
 
 def confirm(question: str, default: bool = True) -> bool:
     suffix = dim("(Y/n)") if default else dim("(y/N)")
-    raw = input(f"\n{question} {suffix}: ").strip().lower()
+    raw = input(f"\n{question} {suffix}, or cancel: ").strip().lower()
+    _raise_if_cancelled(raw)
     if not raw:
         return default
     return raw.startswith("y")

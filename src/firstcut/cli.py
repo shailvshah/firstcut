@@ -9,7 +9,7 @@ import tomllib
 from pathlib import Path
 from typing import Any
 
-from ._core import confirm, prompt, prompt_multi
+from ._core import PromptCancelledError, confirm, prompt, prompt_multi
 from .config import CI_OPTIONS, LICENSES, PROJECT_TYPES, SKILLS, STACKS, ForgeConfig
 from .generate import generate_project, print_banner
 
@@ -286,6 +286,9 @@ def run_init(args: argparse.Namespace) -> int:
             file=sys.stderr,
         )
         return EXIT_USAGE
+    except (KeyboardInterrupt, PromptCancelledError):
+        print("Aborted.")
+        return EXIT_OK
     except ValueError as exc:
         print(str(exc), file=sys.stderr)
         return EXIT_USAGE

@@ -83,7 +83,7 @@ uv sync --all-extras
 uv run firstcut init
 ```
 
-You'll see 4 prompts. Press Enter to accept every default:
+You'll see 4 prompts. Press Enter to accept every default, or type `cancel`, `exit`, `quit`, or `q` at any prompt to abort cleanly:
 
 ```
 ─── Step 1 of 4 — Project type ───────────────────────────────

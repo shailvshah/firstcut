@@ -1,8 +1,11 @@
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
+import pytest
+
 from firstcut._core import (
     ForgeConfig,
+    PromptCancelledError,
     _dev_cmd,
     _install_cmd,
     _lint_cmd,
@@ -68,6 +71,12 @@ def test_prompt_choices(mock_input: MagicMock) -> None:
     assert prompt("Q", "def", choices=["backend", "frontend"]) == "backend"
 
 
+@patch("builtins.input", return_value="exit")
+def test_prompt_can_cancel(mock_input: MagicMock) -> None:
+    with pytest.raises(PromptCancelledError):
+        prompt("Q", "def", choices=["backend", "frontend"])
+
+
 @patch("builtins.input", side_effect=["", "1, 3, a", ""])
 def test_prompt_multi(mock_input: MagicMock) -> None:
     """Test multi-select prompting logic."""
@@ -80,12 +89,26 @@ def test_prompt_multi(mock_input: MagicMock) -> None:
     assert prompt_multi("Q", opts, False) == []
 
 
+@patch("builtins.input", return_value="q")
+def test_prompt_multi_can_cancel(mock_input: MagicMock) -> None:
+    opts = [("a", "A"), ("b", "B")]
+
+    with pytest.raises(PromptCancelledError):
+        prompt_multi("Q", opts)
+
+
 @patch("builtins.input", side_effect=["", "y", "n"])
 def test_confirm(mock_input: MagicMock) -> None:
     """Test confirmation dialogs."""
     assert confirm("Q", default=True) is True
     assert confirm("Q", default=False) is True  # Based on snippet logic
     assert confirm("Q") is False
+
+
+@patch("builtins.input", return_value="cancel")
+def test_confirm_can_cancel(mock_input: MagicMock) -> None:
+    with pytest.raises(PromptCancelledError):
+        confirm("Q")
 
 
 # ── Config ────────────────────────────────────────────────────────────────────

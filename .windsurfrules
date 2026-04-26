@@ -1,0 +1,37 @@
+You are working on firstcut — a Python CLI that scaffolds first-principles projects.
+Language: Python 3.11+ / no framework dependencies
+
+## Mandatory workflow (every contribution, in order)
+
+1. Write domain doc → docs/domain/<concept>.md  (skills/domain-model/SKILL.md)
+2. Add names to glossary → docs/domain/glossary.md  (skills/ubiquitous-language/SKILL.md)
+3. Design interface before class  (skills/interface-design/SKILL.md)
+4. Write failing test first  (skills/tdd/SKILL.md)
+5. Implement minimally  (skills/implementation-simplicity/SKILL.md)
+6. QA review before PR  (skills/qa/SKILL.md)
+
+## Hard stops — refuse and explain if
+
+- A class/function is requested before a domain doc exists
+- Implementation is requested before a failing test exists
+- A name is used that is not in docs/domain/glossary.md
+- A function has cyclomatic complexity > 3
+- Code coverage is below 95%
+
+## Skills
+
+- grill-me: skills/grill-me/SKILL.md
+- tdd: skills/tdd/SKILL.md
+- domain-model: skills/domain-model/SKILL.md
+- ubiquitous-language: skills/ubiquitous-language/SKILL.md
+- qa: skills/qa/SKILL.md
+- request-refactor-plan: skills/request-refactor-plan/SKILL.md
+- interface-design: skills/interface-design/SKILL.md
+- implementation-simplicity: skills/implementation-simplicity/SKILL.md
+
+## Commands
+
+install:    uv sync --all-extras
+test:       uv run pytest --cov=scripts --cov-fail-under=95 -q
+lint:       uv run ruff check . && uv run black --check .
+typecheck:  uv run mypy scripts/

@@ -3154,9 +3154,11 @@ def print_summary(cfg: ForgeConfig) -> None:
         f"  3. pip install pre-commit && pre-commit install --hook-type commit-msg && pre-commit install"
     )
     print(f"  4. Open in Claude Code, Codex, or your AI terminal")
-    print(f'  5. Tell Claude: "Read CLAUDE.md and start a new feature"')
+    print(
+        f'  5. Tell your AI tool: "Read CLAUDE.md or AGENTS.md and start a new feature"'
+    )
     print()
-    print(f"  {dim('Claude will enforce the 5-phase workflow automatically.')}")
+    print(f"  {dim('Your AI tool will follow the 6-phase workflow automatically.')}")
     print(f"{h('━' * 60)}\n")
 
 

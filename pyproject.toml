@@ -2,9 +2,40 @@
 name = "firstcut"
 version = "0.1.0"
 description = "First-principles project scaffolder with embedded AI skills"
+readme = {file = "PYPI.md", content-type = "text/markdown"}
+authors = [
+    {name = "Shail Shah", email = "shailvshah@gmail.com"},
+]
 license = {text = "MIT"}
 requires-python = ">=3.11"
+keywords = [
+    "scaffolding",
+    "project-generator",
+    "ai-tools",
+    "codex",
+    "claude",
+    "clean-architecture",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Topic :: Software Development :: Build Tools",
+    "Topic :: Software Development :: Code Generators",
+]
 dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/shailvshah/firstcut"
+Repository = "https://github.com/shailvshah/firstcut"
+Issues = "https://github.com/shailvshah/firstcut/issues"
 
 [project.scripts]
 firstcut = "firstcut.cli:main"
@@ -22,6 +53,28 @@ dev = [
     "black>=24.4",
     "pre-commit>=3.7",
     "detect-secrets>=1.4",
+    "twine>=6.0",
+]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "/src",
+    "/tests",
+    "/docs",
+    "/skills",
+    "/packages",
+    "/README.md",
+    "/PYPI.md",
+    "/LICENSE",
+    "/Makefile",
+    "/pyproject.toml",
+    "/uv.lock",
+    "/AGENTS.md",
+    "/CLAUDE.md",
+    "/.cursorrules",
+    "/.windsurfrules",
+    "/.pre-commit-config.yaml",
+    "/.github/workflows/ci.yml",
 ]
 
 [tool.pytest.ini_options]

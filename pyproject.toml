@@ -6,6 +6,13 @@ license = {text = "MIT"}
 requires-python = ">=3.11"
 dependencies = []
 
+[project.scripts]
+firstcut = "firstcut.cli:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
@@ -19,7 +26,7 @@ dev = [
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=scripts --cov-fail-under=95 -q"
+addopts = "--cov=src/firstcut --cov-fail-under=95 -q"
 
 [tool.mypy]
 strict = true
@@ -33,13 +40,13 @@ line-length = 88
 select = ["E", "F", "I", "N", "UP", "ANN", "B", "C90"]
 
 [tool.ruff.lint.per-file-ignores]
-# forge.py is a code generator. Its string literals ARE the generated files
+# _core.py is a code generator. Its string literals ARE the generated files
 # (markdown prose, YAML, Go/Python/TS code). Two rules are intentionally relaxed:
-#   E501 — line length inside generated content is meaningless for forge.py itself
+#   E501 — line length inside generated content is meaningless for the generator itself
 #   F541 — f-strings without placeholders are common in generators where a
 #           variable may be added later; they're harmless and fixing them risks
 #           accidentally changing Go {{ }} escape sequences to { }
-"scripts/forge.py" = ["E501", "F541"]
+"src/firstcut/_core.py" = ["E501", "F541"]
 
 [tool.black]
 line-length = 88

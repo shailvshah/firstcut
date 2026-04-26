@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 firstcut — first-principles project scaffolder
-Run:  python scripts/forge.py
+Run:  python -m firstcut.cli init
 """
 
 from __future__ import annotations
@@ -45,7 +45,8 @@ def warn(text: str) -> str:
 
 
 # ── constants ─────────────────────────────────────────────────────────────────
-FORGE_ROOT = Path(__file__).parent.parent.resolve()
+FIRSTCUT_ROOT = Path(__file__).parent.parent.resolve()
+FORGE_ROOT = FIRSTCUT_ROOT
 
 PROJECT_TYPES = {
     "backend": "REST/GraphQL API, microservice, worker, data pipeline",
@@ -3110,9 +3111,9 @@ def init_git(cfg: ForgeConfig) -> None:
         env={
             **os.environ,
             "GIT_AUTHOR_NAME": cfg.org,
-            "GIT_AUTHOR_EMAIL": f"forge@{cfg.org}.com",
+            "GIT_AUTHOR_EMAIL": f"firstcut@{cfg.org}.com",
             "GIT_COMMITTER_NAME": cfg.org,
-            "GIT_COMMITTER_EMAIL": f"forge@{cfg.org}.com",
+            "GIT_COMMITTER_EMAIL": f"firstcut@{cfg.org}.com",
         },
     )
 
@@ -3147,7 +3148,7 @@ def print_summary(cfg: ForgeConfig) -> None:
 # ── main ──────────────────────────────────────────────────────────────────────
 
 
-def main() -> None:
+def main() -> None:  # pragma: no cover - legacy entrypoint kept for compatibility
     print(f"""
 {h("╔══════════════════════════════════════════════════════╗")}
 {h("║")}  {CYAN}firstcut{RESET} — first-principles project scaffolder       {h("║")}
@@ -3205,5 +3206,5 @@ def main() -> None:
     print_summary(cfg)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover - direct script execution shim
     main()

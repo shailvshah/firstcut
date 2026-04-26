@@ -8,17 +8,19 @@
 
 **firstcut** stands on the shoulders of two ideas:
 
-- **[Cookiecutter](https://cookiecutter.readthedocs.io)** — the canonical project templating tool. Cookiecutter taught the world that answering a few questions should be enough to bootstrap a well-structured project. firstcut takes that spirit but drops template repos entirely: it's a single, dependency-free Python script that carries all its opinions internally.
+- **[Cookiecutter](https://cookiecutter.readthedocs.io)** — the canonical project templating tool. Cookiecutter taught the world that answering a few questions should be enough to bootstrap a well-structured project. firstcut takes that spirit but drops template repos entirely: it's a packaged, dependency-free Python generator that carries all its opinions internally.
 
 - **[Matt Pocock's skills](https://github.com/mattpocock/skills/tree/main)** — a system for encoding expert engineering knowledge as plain markdown files that AI assistants read as context. Matt's insight: instead of telling an AI what to do every time, embed your team's process in the repo itself. firstcut adapts this idea into a cross-language, project-creation-time system — your skills ship with every project from day one.
 
 The combination: **structured templates** (Cookiecutter) + **AI skill files** (Pocock) + **opinionated layered architecture** = firstcut.
 
+The supported CLI is `firstcut init`.
+
 ---
 
 ## What it does
 
-`forge.py` is a one-command scaffolder. You run it, answer 4 questions (all have sensible defaults — just press Enter), and it writes a fully configured project to a new directory.
+`firstcut` is a one-command scaffolder. You run `firstcut init`, answer 4 questions (all have sensible defaults — just press Enter), and it writes a fully configured project to a new directory.
 
 That project arrives with:
 
@@ -31,6 +33,35 @@ That project arrives with:
 
 ---
 
+## Install and run
+
+| Channel | Install | Resulting command | Example |
+|------|------|------|------|
+| Python | `uv tool install firstcut` or `pipx install firstcut` | `firstcut` | `firstcut init --defaults` |
+| npm | `npm install -g firstcut-cli` | `firstcut` | `firstcut init --config ./firstcut.toml` |
+| pnpm | `pnpm add -g firstcut-cli` | `firstcut` | `firstcut init` |
+| Go | `go install github.com/your-org/firstcut-go/cmd/firstcut@latest` | `firstcut` | `firstcut init --defaults` |
+
+The Python package is the canonical runtime. The npm and Go packages in `packages/` are launcher wrappers that try `uvx firstcut`, then `pipx run firstcut`, then a cached Python virtual environment. Every channel lands on the same CLI:
+
+```bash
+firstcut init
+firstcut init --defaults
+firstcut init --config ./firstcut.toml
+firstcut init --defaults --project-name api --output-dir ./scratch
+```
+
+From this checkout, use:
+
+```bash
+uv sync --all-extras
+uv run firstcut init
+
+# Optional wrapper smoke paths before publishing
+npm install -g ./packages/npm
+cd packages/go && go install ./cmd/firstcut
+```
+
 ## Quickstart
 
 **Step 1 — clone firstcut**
@@ -40,10 +71,16 @@ git clone https://github.com/your-org/firstcut.git
 cd firstcut
 ```
 
-**Step 2 — run the scaffolder**
+**Step 2 — install local dev dependencies**
 
 ```bash
-python3 scripts/forge.py
+uv sync --all-extras
+```
+
+**Step 3 — run the scaffolder**
+
+```bash
+uv run firstcut init
 ```
 
 You'll see 4 prompts. Press Enter to accept every default:
@@ -62,7 +99,7 @@ Project type (default: backend):
 ─── Step 2 of 4 — Stack ──────────────────────────────────────
 Language (default: python):
 Framework (default: fastapi):
-Package manager [uv/poetry] (default: uv):
+Package manager (default: uv):
 CI target (default: github-actions):
 
 ─── Step 3 of 4 — Project metadata ───────────────────────────
@@ -73,7 +110,7 @@ Organisation / owner (default: my-org):
   All 8 skills enabled by default. Press Enter to keep all.
 ```
 
-**Step 3 — install dependencies and hooks**
+**Step 4 — install dependencies and hooks**
 
 ```bash
 cd ../my-project
@@ -90,13 +127,43 @@ pip install pre-commit && pre-commit install --hook-type commit-msg && pre-commi
 pnpm install
 ```
 
-**Step 4 — open in your AI tool**
+**Step 5 — open in your AI tool**
 
 ```
 Read CLAUDE.md and start a new feature.
 ```
 
-The AI reads your context files and follows the 5-phase workflow automatically.
+The AI reads your context files and follows the 6-phase workflow automatically: domain model, glossary naming, interface design, failing test, simple implementation, and QA.
+
+## Non-interactive usage
+
+Use `--defaults` for the default backend scaffold, combine it with flags for automation, or load JSON/TOML config:
+
+```bash
+firstcut init --defaults --project-name billing-api --output-dir ./scratch
+firstcut init --defaults --config ./firstcut.toml --overwrite
+firstcut init --defaults \
+  --project-type frontend \
+  --language typescript \
+  --framework nextjs \
+  --pkg-manager pnpm \
+  --ci both \
+  --skills all
+```
+
+Config files use the same field names as the CLI flags:
+
+```toml
+project_type = "docs"
+language = "python"
+framework = "mkdocs"
+pkg_manager = "uv"
+project_name = "handbook"
+ci = ["github-actions"]
+skills = ["tdd", "qa", "implementation-simplicity"]
+init_git = true
+include_docs_submodule = true
+```
 
 ---
 
@@ -394,7 +461,7 @@ All four files point to the same `skills/` directory. Every developer gets consi
 
 ## Requirements
 
-- Python 3.11+ (to run `forge.py` — no pip installs required)
+- Python 3.11+ (to develop or publish the canonical package)
 - git
 
 The generated project's requirements depend on the stack you choose (uv, poetry, pnpm, go, cargo).
@@ -407,19 +474,26 @@ The generated project's requirements depend on the stack you choose (uv, poetry,
 
 | | Cookiecutter | firstcut |
 |---|---|---|
-| Template format | Jinja2 template repos (one repo per template) | Single Python script — no external templates |
-| Extensibility | Add a new template repo | Fork and edit `forge.py` |
+| Template format | Jinja2 template repos (one repo per template) | Packaged Python generator — no external templates |
+| Extensibility | Add a new template repo | Edit `src/firstcut/_core.py` and ship the Python package/wrappers |
 | AI skills | Not included | 8 skills embedded at project creation |
 | Architecture opinions | Depends on the template | Opinionated layers baked in (domain / application / infrastructure / api) |
-| Dependencies to run | `pip install cookiecutter` | `python3 forge.py` — zero dependencies |
+| Dependencies to run | `pip install cookiecutter` | `firstcut init` via Python, npm, pnpm, or Go launcher |
 
-Use Cookiecutter when you want a large ecosystem of community templates. Use firstcut when you want a single, self-contained script that embeds your team's engineering process.
+Use Cookiecutter when you want a large ecosystem of community templates. Use firstcut when you want a single, self-contained generator package that embeds your team's engineering process.
 
 ---
 
 ## Contributing to firstcut itself
 
 See [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md). This repo eats its own cooking — it enforces the same workflow on itself that it generates for others.
+
+Useful local checks:
+
+```bash
+make test      # pytest with the 95% coverage gate
+make quality   # lint, format-check, typecheck, and secret scan
+```
 
 ---
 

@@ -37,13 +37,13 @@ When contributing to firstcut itself, follow the same 5-phase SDLC it enforces o
 
 | File | Purpose |
 |------|---------|
-| `scripts/forge.py` | The main CLI — 4-step interactive scaffolder |
+| `src/firstcut/cli.py` | The main CLI — 4-step interactive scaffolder |
 | `skills/` | All 8 AI skills — provider-agnostic markdown |
 | `docs/domain/` | Domain model for this repo |
 
 ## Useful commands
 
 ```bash
-python scripts/forge.py          # run the scaffolder
-python -m pytest scripts/ -q     # test forge.py itself
+uv run firstcut init             # run the scaffolder
+python -m pytest tests/ -q       # test the packaged CLI and core
 ```

@@ -1,0 +1,15 @@
+{
+  "name": "firstcut-cli",
+  "version": "0.1.0",
+  "description": "npm launcher for the canonical firstcut Python CLI",
+  "license": "MIT",
+  "bin": {
+    "firstcut": "./bin/firstcut.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "engines": {
+    "node": ">=18"
+  }
+}

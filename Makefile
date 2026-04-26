@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help install lint format format-check typecheck test secrets-init secrets quality forge
+.PHONY: help install lint format format-check typecheck test secrets-init secrets quality firstcut
 
 RUNNER = uv run
 
@@ -21,7 +21,7 @@ format-check: ## Check formatting without writing (used in CI)
 	$(RUNNER) black --check .
 
 typecheck: ## mypy --strict
-	$(RUNNER) mypy scripts/  tests/ --strict
+	$(RUNNER) mypy src/ tests/ --strict
 
 test: ## pytest with coverage gate
 	$(RUNNER) pytest
@@ -34,5 +34,5 @@ secrets: ## Scan for new secrets against baseline
 
 quality: lint format-check typecheck secrets ## All gates: lint + format-check + typecheck + test + secrets
 
-forge: ## Run the interactive scaffolder
-	python3 scripts/forge.py
+firstcut: ## Run the interactive scaffolder
+	$(RUNNER) firstcut init

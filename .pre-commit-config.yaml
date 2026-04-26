@@ -17,13 +17,13 @@ repos:
     hooks:
       - id: mypy
         args: [--strict]
-        files: ^scripts/
+        files: ^src/
 
   - repo: local
     hooks:
       - id: pytest-coverage
         name: pytest coverage gate (95%)
-        entry: uv run pytest --cov=scripts --cov-fail-under=95 -q
+        entry: uv run pytest --cov=src/firstcut --cov-fail-under=95 -q
         language: system
         pass_filenames: false
         always_run: true

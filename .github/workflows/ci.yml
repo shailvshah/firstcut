@@ -31,10 +31,10 @@ jobs:
         run: uv run ruff check . && uv run black --check .
 
       - name: Type check
-        run: uv run mypy scripts/
+        run: uv run mypy src/ tests/
 
       - name: Test + coverage (>= 95%)
-        run: uv run pytest --cov=scripts --cov-fail-under=95 --cov-report=xml -q
+        run: uv run pytest --cov=src/firstcut --cov-fail-under=95 --cov-report=xml -q
 
       - name: Upload coverage
         uses: codecov/codecov-action@v4

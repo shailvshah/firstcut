@@ -14,11 +14,12 @@ dev = [
     "ruff>=0.4",
     "black>=24.4",
     "pre-commit>=3.7",
+    "detect-secrets>=1.4",
 ]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-addopts = "--cov=scripts --cov-fail-under=80 -q"
+addopts = "--cov=scripts --cov-fail-under=95 -q"
 
 [tool.mypy]
 strict = true
@@ -27,7 +28,18 @@ python_version = "3.11"
 [tool.ruff]
 target-version = "py311"
 line-length = 88
+
+[tool.ruff.lint]
 select = ["E", "F", "I", "N", "UP", "ANN", "B", "C90"]
+
+[tool.ruff.lint.per-file-ignores]
+# forge.py is a code generator. Its string literals ARE the generated files
+# (markdown prose, YAML, Go/Python/TS code). Two rules are intentionally relaxed:
+#   E501 — line length inside generated content is meaningless for forge.py itself
+#   F541 — f-strings without placeholders are common in generators where a
+#           variable may be added later; they're harmless and fixing them risks
+#           accidentally changing Go {{ }} escape sequences to { }
+"scripts/forge.py" = ["E501", "F541"]
 
 [tool.black]
 line-length = 88

@@ -40,7 +40,7 @@ That project arrives with:
 | Python | `uv tool install firstcut` or `pipx install firstcut` | `firstcut` | `firstcut init --defaults` |
 | npm | `npm install -g firstcut-cli` | `firstcut` | `firstcut init --config ./firstcut.toml` |
 | pnpm | `pnpm add -g firstcut-cli` | `firstcut` | `firstcut init` |
-| Go | `go install github.com/your-org/firstcut-go/cmd/firstcut@latest` | `firstcut` | `firstcut init --defaults` |
+| Go | `go install github.com/shailvshah/firstcut/packages/go/cmd/firstcut@latest` | `firstcut` | `firstcut init --defaults` |
 
 The Python package is the canonical runtime. The npm and Go packages in `packages/` are launcher wrappers that try `uvx firstcut`, then `pipx run firstcut`, then a cached Python virtual environment. Every channel lands on the same CLI:
 
@@ -67,7 +67,7 @@ cd packages/go && go install ./cmd/firstcut
 **Step 1 — clone firstcut**
 
 ```bash
-git clone https://github.com/your-org/firstcut.git
+git clone https://github.com/shailvshah/firstcut.git
 cd firstcut
 ```
 

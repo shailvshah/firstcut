@@ -1,14 +1,31 @@
 {
   "name": "firstcut-cli",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "npm launcher for the canonical firstcut Python CLI",
-  "license": "MIT",
   "bin": {
     "firstcut": "./bin/firstcut.js"
   },
   "files": [
-    "bin"
+    "bin/firstcut.js"
   ],
+  "keywords": [
+    "scaffolding",
+    "project-generator",
+    "ai-tools",
+    "codex",
+    "claude",
+    "clean-architecture"
+  ],
+  "author": {
+    "name": "Shail Shah",
+    "email": "shailvshah@gmail.com"
+  },
+  "repository": "github:shailvshah/firstcut",
+  "homepage": "https://github.com/shailvshah/firstcut",
+  "bugs": {
+    "url": "https://github.com/shailvshah/firstcut/issues"
+  },
+  "license": "MIT",
   "engines": {
     "node": ">=18"
   }

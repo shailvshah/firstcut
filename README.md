@@ -495,6 +495,73 @@ make test      # pytest with the 95% coverage gate
 make quality   # lint, format-check, typecheck, and secret scan
 ```
 
+## Release workflow
+
+firstcut ships through three surfaces:
+
+- PyPI: canonical Python package, `firstcut`
+- npm/pnpm: launcher package, `firstcut-cli`
+- Go: submodule launcher, `github.com/shailvshah/firstcut/packages/go`
+
+Prepare a new release by bumping versions first:
+
+```bash
+make release-bump VERSION=0.1.1
+```
+
+If npm needs a different patch version because npm versions cannot be reused:
+
+```bash
+make release-bump VERSION=0.1.1 NPM_VERSION=0.1.2
+```
+
+Validate every release surface without publishing:
+
+```bash
+make release-check
+```
+
+That runs the full quality gate, builds and checks PyPI artifacts, dry-runs the npm package, and validates the Go module.
+
+Create local release tags after the check passes:
+
+```bash
+make release-tag VERSION=0.1.1
+```
+
+If known release files are still uncommitted and should be committed before tagging:
+
+```bash
+make release-tag-dirty VERSION=0.1.1
+```
+
+The tag command creates:
+
+```text
+v0.1.1
+packages/go/v0.1.1
+```
+
+Push intentionally:
+
+```bash
+git push origin main
+git push origin v0.1.1 packages/go/v0.1.1
+```
+
+Publish intentionally:
+
+```bash
+uv run twine upload dist/*
+cd packages/npm && npm publish
+```
+
+After pushing the Go tag, verify the public Go proxy:
+
+```bash
+GOPROXY=proxy.golang.org go list -m github.com/shailvshah/firstcut/packages/go@v0.1.1
+```
+
 ---
 
 ## License
